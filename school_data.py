@@ -49,7 +49,7 @@ class SchoolData:
     def get_db(self, **kwargs):
         return self.__db.execute('''SELECT *
                                         FROM `school_data`
-                                            %s''' % (('WHERE' + ' AND '.join(['%s %s %s' % (re.escape(i), re.escape(kwargs[i][0]), re.escape(kwargs[i][1])) for i in kwargs.keys()])) if len(kwargs) > 0 else ''))
+                                            %s''' % (('WHERE ' + ' AND '.join(['`%s` %s \'%s\'' % (re.escape(i), re.escape(kwargs[i][1]), re.escape(kwargs[i][0])) for i in kwargs.keys()])) if len(kwargs) > 0 else ''))
 
     def crawl_db(self):
         data = requests.post('http://www.foodsafetykorea.go.kr/portal/sensuousmenu/selectSchoolMeals_school.do').json()['list']

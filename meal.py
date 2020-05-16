@@ -39,8 +39,8 @@ class Meal:
 
         data = data[first_dd_date(0, middle - 1):last_dd_date(middle, len(data))]
 
-        start_day = {'일': 0, '월': 1, '화': 2, '수': 3, '목': 4, '금': 5, '토': 6}[data[0]['week-day']]
+        start_day = {'일': 0, '월': 1, '화': 2, '수': 3, '목': 4, '금': 5, '토': 6}[data[0]['week_day']]
 
-        result = [{'lunch': (i['lunch'] if 'lunch' in i else None), 'dinner': (i['dinner'] if 'dinner' in i else None)} for i in data]
+        result = [{'lunch': (i['lunch'].split('\n') if 'lunch' in i else None), 'dinner': (i['dinner'].split('\n') if 'dinner' in i else None)} for i in data]
 
         return start_day, result
