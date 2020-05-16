@@ -1,6 +1,5 @@
 import sqlite3
 import requests
-import urllib.parse
 import re
 
 
@@ -33,7 +32,7 @@ class SchoolData:
     def get_db_file(self):
         return self.__db_file
 
-    def clear(self):
+    def clear_db(self):
         self.__db.execute('''DROP TABLE IF EXISTS `school_data`''')
         self.__db.execute('''CREATE TABLE `school_data` (
                                  `schl_cd` INT NOT NULL,
@@ -41,24 +40,24 @@ class SchoolData:
                                  `ara` varchar(7)
                              )''')
 
-    def commit(self):
+    def commit_db(self):
         self.__db.commit()
 
-    def add(self, schl_cd, schl_nm, ara):
+    def add_db(self, schl_cd, schl_nm, ara):
         self.__db.execute('''INSERT INTO `school_data` VALUES ('%s', '%s', '%s')''' % (re.escape(schl_cd), re.escape(schl_nm), re.escape(ara)))
 
-    def get(self, **kwargs):
+    def get_db(self, **kwargs):
         return self.__db.execute('''SELECT *
                                         FROM `school_data`
                                             %s''' % (('WHERE' + ' AND '.join(['%s %s %s' % (re.escape(i), re.escape(kwargs[i][0]), re.escape(kwargs[i][1])) for i in kwargs.keys()])) if len(kwargs) > 0 else ''))
 
-    def crawl(self):
+    def crawl_db(self):
         data = requests.post('http://www.foodsafetykorea.go.kr/portal/sensuousmenu/selectSchoolMeals_school.do')
         data = data.json()['list']
 
-        self.clear()
+        self.clear_db()
 
         for i in data:
-            self.add(i['schl_cd'], i['schl_nm'], i['ara'])
+            self.add_db(i['schl_cd'], i['schl_nm'], i['ara'])
 
-        self.commit()
+        self.commit_db()
