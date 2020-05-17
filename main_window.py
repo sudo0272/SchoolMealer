@@ -5,10 +5,14 @@ class MainWindow(QtWidgets.QWidget):
     def __init__(self, school_data, meal):
         super().__init__()
 
+        self.school_data = school_data
+        self.meal = meal
+
         self.container = QtWidgets.QVBoxLayout()
 
         self.refresh_db_container = QtWidgets.QHBoxLayout()
         self.refresh_db = QtWidgets.QPushButton('DB 업데이트')
+        self.refresh_db.clicked.connect(self.update_db)
         self.refresh_db_container.addStretch()
         self.refresh_db_container.addWidget(self.refresh_db)
         self.container.addLayout(self.refresh_db_container)
@@ -77,7 +81,7 @@ class MainWindow(QtWidgets.QWidget):
         self.calendar = QtWidgets.QTableWidget()
         self.calendar.setColumnCount(7)
         self.calendar.setRowCount(5)
-        self.calendar.setHorizontalHeaderLabels(['일요일', '월요일', '화요일', '수요일', '목요일', '금요일','토요일'])
+        self.calendar.setHorizontalHeaderLabels(['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'])
         self.calendar.verticalHeader().setVisible(False)
 
         self.calendar_container.addWidget(self.calendar)
@@ -87,3 +91,14 @@ class MainWindow(QtWidgets.QWidget):
         self.setLayout(self.container)
         self.setWindowTitle('급식')
         self.setGeometry(50, 50, 800, 600)
+
+    def update_db(self):
+        self.refresh_db.setText('DB 업데이트 중...')
+        self.refresh_db.setEnabled(False)
+        self.refresh_db.repaint()
+
+        self.school_data.crawl_db()
+
+        self.refresh_db.setText('DB 업데이트')
+        self.refresh_db.setEnabled(True)
+        self.refresh_db.repaint()
