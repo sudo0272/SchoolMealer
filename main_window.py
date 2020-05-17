@@ -11,10 +11,10 @@ class MainWindow(QtWidgets.QWidget):
         self.container = QtWidgets.QVBoxLayout()
 
         self.refresh_db_container = QtWidgets.QHBoxLayout()
-        self.refresh_db = QtWidgets.QPushButton('DB 업데이트')
-        self.refresh_db.clicked.connect(self.update_db)
+        self.refresh_db_button = QtWidgets.QPushButton('DB 업데이트')
+        self.refresh_db_button.clicked.connect(self.refresh_db)
         self.refresh_db_container.addStretch()
-        self.refresh_db_container.addWidget(self.refresh_db)
+        self.refresh_db_container.addWidget(self.refresh_db_button)
         self.container.addLayout(self.refresh_db_container)
 
         self.search_container = QtWidgets.QHBoxLayout()
@@ -46,9 +46,9 @@ class MainWindow(QtWidgets.QWidget):
         self.month_container.addWidget(self.month_label)
         self.search_container.addLayout(self.month_container)
 
-        self.search = QtWidgets.QPushButton('검색')
-        self.search.setFont(QtGui.QFont('', 13))
-        self.search_container.addWidget(self.search)
+        self.search_button = QtWidgets.QPushButton('검색')
+        self.search_button.setFont(QtGui.QFont('', 13))
+        self.search_container.addWidget(self.search_button)
         
         self.search_container.addStretch()
 
@@ -92,13 +92,13 @@ class MainWindow(QtWidgets.QWidget):
         self.setWindowTitle('급식')
         self.setGeometry(50, 50, 800, 600)
 
-    def update_db(self):
-        self.refresh_db.setText('DB 업데이트 중...')
-        self.refresh_db.setEnabled(False)
-        self.refresh_db.repaint()
+    def refresh_db(self):
+        self.refresh_db_button.setText('DB 업데이트 중...')
+        self.refresh_db_button.setEnabled(False)
+        self.refresh_db_button.repaint()
 
         self.school_data.crawl_db()
 
-        self.refresh_db.setText('DB 업데이트')
-        self.refresh_db.setEnabled(True)
-        self.refresh_db.repaint()
+        self.refresh_db_button.setText('DB 업데이트')
+        self.refresh_db_button.setEnabled(True)
+        self.refresh_db_button.repaint()
