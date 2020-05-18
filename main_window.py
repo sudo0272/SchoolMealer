@@ -98,6 +98,8 @@ class MainWindow(QtWidgets.QWidget):
         self.calendar.setRowCount(6)
         self.calendar.setHorizontalHeaderLabels(['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'])
         self.calendar.verticalHeader().setVisible(False)
+        for i in range(7):
+            self.calendar.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
 
         self.search_result_container.addWidget(self.calendar)
 
@@ -152,8 +154,8 @@ class MainWindow(QtWidgets.QWidget):
             row_count, i_end = divmod(start_day + len(meal_data), 7)
             j_start = start_day
 
-            for i in range(7):
-                self.calendar.setColumnWidth(i, 200)
+            for i in range(j_start):
+                self.calendar.setCellWidget(0, i, MealTableItem('', None, None))
 
             for i in range(row_count):
                 base_index = i * 7 - start_day
@@ -169,9 +171,13 @@ class MainWindow(QtWidgets.QWidget):
 
                 self.calendar.setCellWidget(row_count, i, MealTableItem(str(index + 1), meal_data[index]['lunch'], meal_data[index]['dinner']))
 
+            for i in range(row_count, 6):
+                for j in range(i_end, 7):
+                    self.calendar.setCellWidget(i, j, MealTableItem('', None, None))
+
+                i_end = 0
+
             self.calendar.resizeRowsToContents()
-            for i in range(7):
-                self.calendar.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
 
             self.search_result_container.setCurrentIndex(0)
 
