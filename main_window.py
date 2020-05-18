@@ -31,10 +31,12 @@ class MainWindow(QtWidgets.QWidget):
         self.search_container.addLayout(self.school_container)
 
         today = datetime.datetime.now()
+        self.min_year = 2019
+        self.max_year = today.year + 1
 
         self.year_container = QtWidgets.QHBoxLayout()
         self.year = QtWidgets.QSpinBox()
-        self.year.setRange(2019, today.year)
+        self.year.setRange(self.min_year, self.max_year)
         self.year.setValue(today.year)
         self.year_label = QtWidgets.QLabel()
         self.year_label.setText('년')
@@ -71,6 +73,7 @@ class MainWindow(QtWidgets.QWidget):
         self.previous_month_arrow = QtWidgets.QPushButton()
         self.previous_month_arrow.setText('<<')
         self.previous_month_arrow.setFont(QtGui.QFont('', 13))
+        self.previous_month_arrow.clicked.connect(self.move_to_previous_month)
         self.date_navigator_container.addWidget(self.previous_month_arrow)
 
         self.current_date = QtWidgets.QLabel()
@@ -81,6 +84,7 @@ class MainWindow(QtWidgets.QWidget):
         self.next_month_arrow = QtWidgets.QPushButton()
         self.next_month_arrow.setText('>>')
         self.next_month_arrow.setFont(QtGui.QFont('', 13))
+        self.next_month_arrow.clicked.connect(self.move_to_next_month)
         self.date_navigator_container.addWidget(self.next_month_arrow)
 
         self.date_navigator_container.addStretch()
@@ -130,10 +134,15 @@ class MainWindow(QtWidgets.QWidget):
 
         data = tuple(self.school_data.get_db(schl_nm=(self.school.text(), '=')))
         data = data[0] if len(data) else None
-        year = self.year.text()
-        month = self.month.text()
+        year = int(self.year.text())
+        month = int(self.month.text())
 
-        print(data)
+        self.current_date.setText('%d년 %d월' % (year, month))
+
+        self.previous_month_arrow.setEnabled(False if year == self.min_year and month == 1 else True)
+        self.previous_month_arrow.repaint()
+        self.next_month_arrow.setEnabled(False if year == self.max_year and month == 12 else True)
+        self.next_month_arrow.repaint()
 
         if data is None:
             self.search_result_container.setCurrentIndex(1)
@@ -169,3 +178,39 @@ class MainWindow(QtWidgets.QWidget):
         self.search_button.setText('검색')
         self.search_button.setEnabled(True)
         self.search_button.repaint()
+
+    def move_to_previous_month(self):
+        month = int(self.month.text())
+        year = int(self.year.text())
+
+        if year == self.min_year:
+            if month == 1:
+                return
+            else:
+                self.month.setValue(int(month) - 1)
+        else:
+            if month == 1:
+                self.year.setValue(int(year) - 1)
+                self.month.setValue(12)
+            else:
+                self.month.setValue(int(month) - 1)
+
+        self.search()
+
+    def move_to_next_month(self):
+        month = self.month.text()
+        year = self.year.text()
+
+        if year == self.max_year:
+            if month == 12:
+                return
+            else:
+                self.month.setValue(int(month) + 1)
+        else:
+            if month == 12:
+                self.year.setValue(int(year) + 1)
+                self.month.setValue(1)
+            else:
+                self.month.setValue(int(month) + 1)
+
+        self.search()
