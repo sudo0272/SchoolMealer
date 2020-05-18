@@ -25,6 +25,8 @@ class MainWindow(QtWidgets.QWidget):
 
         self.school_container = QtWidgets.QHBoxLayout()
         self.school = QtWidgets.QLineEdit()
+        school_candidates = [i[1] for i in self.school_data.get_db()]
+        self.school.setCompleter(QtWidgets.QCompleter(school_candidates))
         self.school_container.addWidget(self.school)
         self.search_container.addLayout(self.school_container)
 
