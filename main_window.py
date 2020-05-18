@@ -159,6 +159,8 @@ class MainWindow(QtWidgets.QWidget):
                 self.calendar.setCellWidget(row_count, i, MealTableItem(str(index + 1), meal_data[index]['lunch'], meal_data[index]['dinner']))
 
             self.calendar.resizeRowsToContents()
+            for i in range(7):
+                self.calendar.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
 
             self.search_result_container.setCurrentIndex(0)
 
