@@ -125,6 +125,9 @@ class MainWindow(QtWidgets.QWidget):
 
         self.school_data.crawl_db()
 
+        school_candidates = [i[1] for i in self.school_data.get_db()]
+        self.school.setCompleter(QtWidgets.QCompleter(school_candidates))
+
         self.refresh_db_button.setText('DB 업데이트')
         self.refresh_db_button.setEnabled(True)
         self.refresh_db_button.repaint()
